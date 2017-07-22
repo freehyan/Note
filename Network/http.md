@@ -76,7 +76,33 @@ HTTP状态码Web服务器告诉客户端发生了什么，状态码第一个数�
 * 404 **Not Found** 未找到资源
 * 500 **Internal Server Error** 服务器遇到一个错误，使其无法对请求提供服务
 
+---
+### HTTPS
 
+HHTPS, 安全套接字层超文本传输协议 (Hyper Text Transfer Protocol over Secure Socket Layer)。HTTPS是以安全为目标的HTTP通道，为了数据的安全，
+HHTPS在http基础上加入了SSL协议，SSL依靠证书来验证服务器的身份，并为浏览器和服务器通信加密。
+
+![][3]
+
+* HTTPS 工作原理
+
+	1. 浏览器发送HTTPS请求
+	2. 服务端配置：服务端必须有数字证书：(公匙和私匙)。服务端返回公匙（包含证书颁发机构，有效时间等），自己保留私匙，
+	3. 传送证书：客户端生成随机值，验证公匙是否有效，无效输出http警告；有效则用随机值加密公匙
+	4. 传送加密信息：用证书加密的随机值，目的让服务端获取到这个随机值
+	5. 服务端解密信息：利用私匙解密后，得到随机值，利用随机值把响应内容进行**对称加密**（信息和私匙混合在一起，只能通过私匙才能加密）
+	6. 传输加密后信息：服务端用私匙加密后的，可在客户端还原
+	7. 客户端通过一开始产生的随机值，获取解密内容
+
+
+* HTTP 和 HTTPS 的区别：
+
+	1. https协议需要到ca申请证书
+	2. http是超文本传输协议，信息是明文传输，https则是具有安全性的ssl加密传输协议
+	3. http和https使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443
+	4. http的连接很简单，是无状态的；HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全
+
+---
 ### 问题
 
 1. http协议Get和Post的区别？
@@ -91,28 +117,39 @@ GET一般用于**获取/查询**资源信息，而POST一般用于**更新**资�
 	6. GET方式需要使用Request.QueryString来取得变量的值，而POST方式通过Request.Form来获取变量的值，也就是说Get是通过地址栏来传值，而Post是通过提交表单来传值。
 	7. 对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）；而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。
 
+直观上区别GET会URL在尾部添加访问参数，POST则是把参数放在Request Body中；GET方法url传入参数有长度限制，POST没有；
 
-直观上区别GET会URL在尾部添加访问参数，POST则是把参数放在Request Body中；
-GET方法url传入参数有长度限制，POST没有；
 
 2. http和https的区别
+
+	HTTPS是HTTP基础上安全加密的网络协议，需要申请证书，相对HTTP传输缓慢一些，但是安全性更高。通常一些银行网站都是使用HTTPS协议，而个人网站使用HTTP
+	协议即可。 HTTP和HTTPS的连接方式不一致，目的端口也不一样。（HTTP 是80端口， HTTPS是443端口）。
+
 3. http的状态码有哪些？
+
+	* 200 表示服务端正确处理客户端请求；
+	* 404，请求页面不存在；
+	* 500，服务器遇到错误，无法对请求做出响应；
+
 4. http的cookie和session
+
 5. http1.0和1.1的区别
 
+	* HTTP 1.0协议： 客户端与服务器建立连接后，只能获取1个web资源，获取资源后断开连接；
+	* HHTP 1.1协议：客户端可一次获取web服务器多个资源，并不会断开连接；除非访问出错和手动断开连接
 
-
----
 
 [1]:http_request_reponse.jpg
 [2]:http_request.png
+[3]:https_theory.png
 
 ---
 
 ### 资料
 
-【1】：http://www.cnblogs.com/mengdd/archive/2013/05/26/3099776.html
-
-【2】：http://www.cnblogs.com/yaozhongxiao/archive/2013/03/02/2940252.html
-
-【3】：http://blog.jobbole.com/106632/
+1. [HTTP基础：URL格式、 HTTP请求、响应、消息](http://www.cnblogs.com/mengdd/archive/2013/05/26/3099776.html)
+2. [HTTP请求和响应格式](http://www.cnblogs.com/yaozhongxiao/archive/2013/03/02/2940252.html)
+3. [一次完整的 HTTP 请求过程](http://blog.jobbole.com/106632/)
+4. [图解HTTPS](http://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html)
+5. [http 1.0和1.1 的区别](http://www8.org/w8-papers/5c-protocols/key/key.html)
+6. [通俗讲解http,HTTP/1.0和HTTP/1.1的区别](http://www.haowuyun.com/view/78)
